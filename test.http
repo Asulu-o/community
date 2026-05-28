@@ -1,0 +1,115 @@
+### 注册用户
+POST http://localhost:8080/user/register
+Content-Type: application/json
+
+{
+  "username": "lisi",
+  "password": "123456",
+  "email": "lisi@example.com"
+}
+### 登录用户
+POST http://localhost:8080/user/login
+Content-Type: application/json
+
+{
+  "username": "lisi",
+  "password": "123456"
+}
+### 登录用户（错误密码）
+POST http://localhost:8080/user/login
+Content-Type: application/json
+
+{
+  "username": "lisi",
+  "password": "wrongpassword"
+}
+### 获取用户信息（用新 Token）
+GET http://localhost:8080/auth/info
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsaXNpIiwiaWF0IjoxNzc5MDcxMzA1LCJleHAiOjE3Nzk2NzYxMDV9.tjCrDn9wh9MBfWoZI6JvpHOWhnDrUD9vNSTJicL8Pr4
+
+### 登录用户
+POST http://localhost:8080/user/login
+Content-Type: application/json
+
+{
+  "username": "lisi",
+  "password": "123456"
+}
+
+### 获取用户信息（用新 Token）
+GET http://localhost:8080/auth/info
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsaXNpIiwiaWF0IjoxNzc5MDcxMzA1LCJleHAiOjE3Nzk2NzYxMDV9.tjCrDn9wh9MBfWoZI6JvpHOWhnDrUD9vNSTJicL8Pr4
+
+### 1. 登录获取Token
+POST http://localhost:8080/user/login
+Content-Type: application/json
+
+{
+  "username": "lisi",
+  "password": "123456"
+}
+
+### 2. 发布文章
+POST http://localhost:8080/article/publish
+Content-Type: application/json
+Authorization: Bearer 你的Token
+
+{
+  "title": "我的第一篇文章",
+  "content": "这是文章内容",
+  "status": 2
+}
+
+### 3. 查看我的文章列表
+GET http://localhost:8080/article/my-list
+Authorization: Bearer 你的Token
+### 发布文章
+POST http://localhost:8080/article/publish
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsaXNpIiwiaWF0IjoxNzc5MDc1NjUyLCJleHAiOjE3Nzk2ODA0NTJ9.EU8XtpZFxMOezduOY51LNoB6n-m0n2yZcTS-YTvkrzI
+
+{
+  "title": "我的第一篇文章",
+  "content": "这是文章内容",
+  "status": 2
+}
+
+### 查询我的文章列表
+GET http://localhost:8080/article/my-list
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsaXNpIiwiaWF0IjoxNzc5MDc1NjUyLCJleHAiOjE3Nzk2ODA0NTJ9.EU8XtpZFxMOezduOY51LNoB6n-m0n2yZcTS-YTvkrzI
+
+### 查询我的文章列表
+GET http://localhost:8080/article/my-list
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsaXNpIiwiaWF0IjoxNzc5MDc1NjUyLCJleHAiOjE3Nzk2ODA0NTJ9.EU8XtpZFxMOezduOY51LNoB6n-m0n2yZcTS-YTvkrzI
+
+### 查询单篇文章
+GET http://localhost:8080/article/1
+
+### 更新文章
+PUT http://localhost:8080/article/1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsaXNpIiwiaWF0IjoxNzc5MDc1NjUyLCJleHAiOjE3Nzk2ODA0NTJ9.EU8XtpZFxMOezduOY51LNoB6n-m0n2yZcTS-YTvkrzI
+
+{
+  "title": "修改后的标题",
+  "content": "修改后的内容",
+  "status": 2
+}
+
+### 删除文章
+DELETE http://localhost:8080/article/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsaXNpIiwiaWF0IjoxNzc5MDc1NjUyLCJleHAiOjE3Nzk2ODA0NTJ9.EU8XtpZFxMOezduOY51LNoB6n-m0n2yZcTS-YTvkrzI
+
+
+### 登录
+POST http://localhost:8080/user/login
+Content-Type: application/json
+
+{
+  "username": "lisi",
+  "password": "123456"
+}
+
+### 查询我的文章列表
+GET http://localhost:8080/article/my-list
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsaXNpIiwiaWF0IjoxNzc5NjA0MTY4LCJleHAiOjE3ODAyMDg5Njh9.Zk7b6HJlnd_HvBpZDwGD3nQJOz9JWjRE87l7UpaXLAw
