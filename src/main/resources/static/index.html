@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>社区内容管理系统</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* 头部 */
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* 卡片区域 */
+        .cards {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            flex: 1;
+            min-width: 280px;
+        }
+
+        .card h2 {
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .card h3 {
+            color: #555;
+            font-size: 0.9rem;
+            margin-top: 15px;
+            margin-bottom: 5px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            margin-top: 10px;
+            transition: transform 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+        }
+
+        /* 结果显示区域 */
+        .result-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        .result-card h2 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .result-content {
+            background: #f5f5f5;
+            border-radius: 8px;
+            padding: 15px;
+            font-family: monospace;
+            font-size: 12px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        .success {
+            color: green;
+        }
+
+        .error {
+            color: red;
+        }
+
+        .token-display {
+            background: #e8f4f8;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            word-break: break-all;
+            font-size: 12px;
+        }
+
+        .article-item {
+            background: #fafafa;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .article-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .article-content {
+            color: #666;
+            margin-top: 8px;
+        }
+
+        .article-time {
+            color: #999;
+            font-size: 12px;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>📝 社区内容管理系统</h1>
+        <p>基于 Spring Boot + JWT 的社区系统</p>
+    </div>
+
+    <div class="cards">
+        <!-- 注册卡片 -->
+        <div class="card">
+            <h2>📝 注册</h2>
+            <input type="text" id="regUsername" placeholder="用户名">
+            <input type="password" id="regPassword" placeholder="密码">
+            <input type="email" id="regEmail" placeholder="邮箱">
+            <button onclick="register()">注册</button>
+        </div>
+
+        <!-- 登录卡片 -->
+        <div class="card">
+            <h2>🔐 登录</h2>
+            <input type="text" id="loginUsername" placeholder="用户名">
+            <input type="password" id="loginPassword" placeholder="密码">
+            <button onclick="login()">登录</button>
+            <div id="tokenDisplay" class="token-display" style="display:none;">
+                <strong>Token:</strong> <span id="tokenValue"></span>
+            </div>
+        </div>
+
+        <!-- 发布文章卡片 -->
+        <div class="card">
+            <h2>✏️ 发布文章</h2>
+            <input type="text" id="articleTitle" placeholder="标题">
+            <textarea id="articleContent" placeholder="内容" rows="4"></textarea>
+            <button onclick="publishArticle()">发布文章</button>
+        </div>
+    </div>
+
+    <!-- 我的文章列表 -->
+    <div class="result-card">
+        <h2>📄 我的文章列表</h2>
+        <button onclick="loadMyArticles()" style="width: auto; padding: 8px 20px;">刷新列表</button>
+        <div id="articleList"></div>
+    </div>
+
+    <!-- 结果显示 -->
+    <div class="result-card">
+        <h2>📋 操作结果</h2>
+        <div id="result" class="result-content">等待操作...</div>
+    </div>
+</div>
+
+<script>
+    let currentToken = localStorage.getItem('token') || '';
+
+    function showResult(data, isError) {
+        const resultDiv = document.getElementById('result');
+        resultDiv.innerHTML = JSON.stringify(data, null, 2);
+        resultDiv.className = isError ? 'error result-content' : 'success result-content';
+    }
+
+    // 注册
+    async function register() {
+        const username = document.getElementById('regUsername').value;
+        const password = document.getElementById('regPassword').value;
+        const email = document.getElementById('regEmail').value;
+
+        if (!username || !password) {
+            showResult({ error: '用户名和密码不能为空' }, true);
+            return;
+        }
+
+        try {
+            const response = await fetch('/user/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password, email })
+            });
+            const result = await response.json();
+            showResult(result, result.code !== 200);
+
+            if (result.code === 200) {
+                document.getElementById('regUsername').value = '';
+                document.getElementById('regPassword').value = '';
+                document.getElementById('regEmail').value = '';
+            }
+        } catch (err) {
+            showResult({ error: err.message }, true);
+        }
+    }
+
+    // 登录
+    async function login() {
+        const username = document.getElementById('loginUsername').value;
+        const password = document.getElementById('loginPassword').value;
+
+        if (!username || !password) {
+            showResult({ error: '用户名和密码不能为空' }, true);
+            return;
+        }
+
+        try {
+            const response = await fetch('/user/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+            const result = await response.json();
+
+            if (result.code === 200 && result.data) {
+                currentToken = result.data;
+                localStorage.setItem('token', currentToken);
+                document.getElementById('tokenDisplay').style.display = 'block';
+                document.getElementById('tokenValue').textContent = currentToken.substring(0, 50) + '...';
+                showResult({ success: true, message: '登录成功，Token已保存' }, false);
+                loadMyArticles();
+            } else {
+                showResult(result, true);
+            }
+        } catch (err) {
+            showResult({ error: err.message }, true);
+        }
+    }
+
+    // 发布文章
+    async function publishArticle() {
+        if (!currentToken) {
+            showResult({ error: '请先登录' }, true);
+            return;
+        }
+
+        const title = document.getElementById('articleTitle').value;
+        const content = document.getElementById('articleContent').value;
+
+        if (!title || !content) {
+            showResult({ error: '标题和内容不能为空' }, true);
+            return;
+        }
+
+        try {
+            const response = await fetch('/article/publish', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + currentToken
+                },
+                body: JSON.stringify({ title, content, status: 2 })
+            });
+            const result = await response.json();
+            showResult(result, result.code !== 200);
+
+            if (result.code === 200) {
+                document.getElementById('articleTitle').value = '';
+                document.getElementById('articleContent').value = '';
+                loadMyArticles();
+            }
+        } catch (err) {
+            showResult({ error: err.message }, true);
+        }
+    }
+
+    // 加载我的文章列表
+    async function loadMyArticles() {
+        if (!currentToken) {
+            document.getElementById('articleList').innerHTML = '<p style="color: #999;">请先登录</p>';
+            return;
+        }
+
+        try {
+            const response = await fetch('/article/my-list', {
+                method: 'GET',
+                headers: { 'Authorization': 'Bearer ' + currentToken }
+            });
+            const result = await response.json();
+
+            if (result.code === 200 && result.data) {
+                const articles = result.data;
+                if (articles.length === 0) {
+                    document.getElementById('articleList').innerHTML = '<p style="color: #999;">暂无文章，发布第一篇吧！</p>';
+                } else {
+                    let html = '';
+                    for (let article of articles) {
+                        html += `
+                                <div class="article-item">
+                                    <div class="article-title">${escapeHtml(article.title)}</div>
+                                    <div class="article-content">${escapeHtml(article.content)}</div>
+                                    <div class="article-time">发布时间：${article.createTime || '未知'}</div>
+                                </div>
+                            `;
+                    }
+                    document.getElementById('articleList').innerHTML = html;
+                }
+            } else {
+                document.getElementById('articleList').innerHTML = '<p style="color: red;">加载失败</p>';
+            }
+        } catch (err) {
+            document.getElementById('articleList').innerHTML = '<p style="color: red;">加载失败：' + err.message + '</p>';
+        }
+    }
+
+    function escapeHtml(text) {
+        if (!text) return '';
+        return text.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    // 页面加载时检查是否有保存的Token
+    if (currentToken) {
+        document.getElementById('tokenDisplay').style.display = 'block';
+        document.getElementById('tokenValue').textContent = currentToken.substring(0, 50) + '...';
+        loadMyArticles();
+    }
+</script>
+</body>
+</html>
